@@ -1,6 +1,7 @@
 class View {
   constructor() {
     this.recorderBtn = document.getElementById("record");
+    this.leaveBtn = document.getElementById("leave");
   }
 
   //para criar o elemento de vídeo dentro do HTML
@@ -25,16 +26,10 @@ class View {
     return video;
   }
 
-  renderVideo({
-    userId,
-    stream = null,
-    url = null,
-    muted = true,
-    isCurrentId = false,
-  }) {
+  renderVideo({ userId, stream = null, url = null, isCurrentId = false }) {
     const video = this.createVideoElement({
       src: url,
-      muted,
+      muted: isCurrentId,
       srcObject: stream,
     });
     this.appendToHTMLTree(userId, video, isCurrentId);
@@ -73,7 +68,20 @@ class View {
       this.toogleRecordingButtonColor(isActive);
     };
   }
+
+  onLeaveClick(command) {
+    return async () => {
+      command();
+
+      await Util.sleep(3000);
+      window.location = "/pages/home";
+    };
+  }
   configureRecordButton(command) {
     this.recorderBtn.addEventListener("click", this.onRecordClick(command));
+  }
+
+  configureLeaveButton(command) {
+    this.leaveBtn.addEventListener("click", this.onLeaveClick(command));
   }
 }
